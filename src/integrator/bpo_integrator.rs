@@ -1,4 +1,5 @@
 use crate::data_connector::{BpoCompatible, DataConnector};
+use crate::integrator::Integrator;
 use crate::integrator::integrator_error::IntegratorError;
 
 pub struct BpoIntegrator<T: DataConnector + BpoCompatible> {
@@ -6,7 +7,7 @@ pub struct BpoIntegrator<T: DataConnector + BpoCompatible> {
 }
 
 // TODO problem z brakiem integracji Integratora
-impl<T: DataConnector + BpoCompatible> BpoIntegrator<T> {
+impl<T: DataConnector + BpoCompatible> Integrator BpoIntegrator<T> {
     pub fn new() -> Self {
        BpoIntegrator {
             connectors: Vec::new()

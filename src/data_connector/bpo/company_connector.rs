@@ -1,21 +1,42 @@
-use std::any::type_name;
+use crate::data_connector::{BpoCompatible, DataConnector, IntegrationUnit};
+use crate::shared::{IntegrationContext, IntegrationError};
+use crate::shared::DataSource::CEIDG;
+use crate::shared::Profile::FREE;
 
-use crate::data_connector::{BpoCompatible, DataConnector};
-use crate::shared::IntegrationError;
 pub struct CompanyDataConnector;
 
 impl BpoCompatible for CompanyDataConnector {}
 
 impl DataConnector for CompanyDataConnector {
-    fn name(&self) -> &str {
-        type_name::<Self>()
+    type Output = CompanyData;
+    
+    fn supply(&self, _: &IntegrationContext) -> Result<Self::Output, IntegrationError> {
+        Ok(CompanyData {
+            name: String::from("Example Company"),
+            is_active: true,
+            self_employed: false,
+            started_at: Some(String::from("2024-01-01")),
+            closed_at: None,
+            suspended_at: None,
+        })
     }
 
-    fn supply(&self) -> Result<String, IntegrationError> {
-        Ok(format!("Data from {}", self.name()))
+    fn get_integration_units(&self, context: &IntegrationContext) -> Vec<IntegrationUnit> {
+        if (context.attempt_number > 5) {
+            return vec![IntegrationUnit::DataSource(CEIDG)];
+        }
+        
+        vec![
+            IntegrationUnit::Profile(FREE),
+        ]
     }
+}
 
-    fn trigger(&self) {
-        println!("Integration triggered {}", self.name());
-    }
+pub struct CompanyData {
+    name: String,
+    is_active: bool,
+    self_employed: bool,
+    started_at: Option<String>,
+    closed_at: Option<String>,
+    suspended_at: Option<String>,
 }

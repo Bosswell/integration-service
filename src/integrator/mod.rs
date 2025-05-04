@@ -5,6 +5,7 @@ pub mod bpo_integrator;
 mod integrator_error;
 
 pub use crate::integrator::bpo_integrator::BpoIntegrator;
+use crate::shared::{DataSource, Profile};
 
 trait Integrator {
     fn new() -> Self;
